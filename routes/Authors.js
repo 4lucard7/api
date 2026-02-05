@@ -1,7 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 const asyncHandler = require("express-async-handler");
-const {Author , ValidationUpdateAuthor, ValidationCreateAuthor, findByIdAndDelete} = require("../models/Author");
+const {Author , ValidationUpdateAuthor, ValidationCreateAuthor} = require("../models/Author");
 
 
 /**
@@ -73,7 +73,7 @@ Router.post("/", asyncHandler(async (req, res) => {
  */
 Router.put("/", asyncHandler(async (req, res) => {
     
-    const {error} = ValidationCreateAuthor(req.body);
+    const {error} = ValidationUpdateAuthor(req.body);
 
     if (error) {
       return res.status(400).json({ message: error.details[0].message});

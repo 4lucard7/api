@@ -54,6 +54,10 @@ function ValidationUpdateAuthor(obj) {
 
 
 
+const Author = mongoose.model("Author", AuthorSchema);
 
-module.exports = {ValidationUpdateAuthor, ValidationCreateAuthor};
-module.exports = mongoose.model("Author", AuthorSchema);
+module.exports = {
+  Author,
+  ValidationCreateAuthor,
+  ValidationUpdateAuthor,
+};
