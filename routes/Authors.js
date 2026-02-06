@@ -2,6 +2,9 @@ const express = require("express");
 const Router = express.Router();
 const asyncHandler = require("express-async-handler");
 const {Author , ValidationUpdateAuthor, ValidationCreateAuthor} = require("../models/Author");
+const {
+  verifyTokenAndAdmin
+} = require("../middlewares/VerifyToken");
 
 
 /**
@@ -44,9 +47,9 @@ Router.get("/:id", asyncHandler(async (req, res) => {
  * @description create new  author 
  * @route /api/authors
  * @method POST
- * @access public
+ * @access private
  */
-Router.post("/", asyncHandler(async (req, res) => {
+Router.post("/", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
     
     const {error} = ValidationCreateAuthor(req.body);
 
@@ -71,7 +74,7 @@ Router.post("/", asyncHandler(async (req, res) => {
  * @method PUT
  * @access public
  */
-Router.put("/", asyncHandler(async (req, res) => {
+Router.put("/", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
     
     const {error} = ValidationUpdateAuthor(req.body);
 
@@ -98,7 +101,7 @@ Router.put("/", asyncHandler(async (req, res) => {
  * @method DELETE
  * @access public
  */
-Router.delete("/:id", asyncHandler(async (req, res) => {
+Router.delete("/:id", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
     const author = await Author.findByIdAndDelete(req.params.id);
 
     if (!author) {
