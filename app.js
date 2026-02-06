@@ -2,6 +2,7 @@ const express = require("express");
 const bookPath = require("./routes/Books");
 const AuthorPath = require("./routes/Authors");
 const AuthPath = require("./routes/Auth");
+const UserPath = require("./routes/Users");
 const mongoose = require("mongoose");
 const logger = require("./middlewares/logger");
 const {ErrorHandler, notFound} = require("./middlewares/error");
@@ -32,6 +33,7 @@ app.use(logger);
 app.use("/api/books", bookPath);
 app.use("/api/authors", AuthorPath);
 app.use("/api/auth", AuthPath);
+app.use("/api/users", UserPath);
 
 
 //Error handler middlewares

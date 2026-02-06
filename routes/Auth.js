@@ -1,6 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const {User, validateRegister, validateLogin} = require("../models/User");
 
@@ -31,10 +32,9 @@ Router.post("/register", asyncHandler(async (req, res) => {
       email : req.body.email,
       username : req.body.username,
       password : req.body.password,
-      isAdmin : req.body.isAdmin,
     })
     const rest = await user.save();
-    const token = null;
+    const token = jwt.sign({ id : user._id, isAdmin : user.isAdmin }, process.env.JWT_SECRET_KEY); 
     const {password, ...other} = rest._doc;
 
     res.status(201).json({...other, token});
@@ -66,11 +66,12 @@ Router.post("/register", asyncHandler(async (req, res) => {
     if(!isPassword){
         return res.status(400).json({message : "invalid password" });
     }
-    const token = null;
+
+    const token = jwt.sign({ id : user._id, isAdmin : user.isAdmin }, process.env.JWT_SECRET_KEY);
     const {password, ...other} = user._doc;
     
     res.status(200).json({...other, token});
   })
-)
+);
 
 module.exports = Router;
