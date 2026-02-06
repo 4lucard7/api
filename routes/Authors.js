@@ -1,5 +1,6 @@
 const express = require("express");
-const Router = express.Router();
+const router = express.Router();
+
 const {
   verifyTokenAndAdmin,
 } = require("../middlewares/VerifyToken");
@@ -14,42 +15,37 @@ const {
 
 /**
  * @description Get all authors
- * @route /api/authors
- * @method GET
- * @access public
+ * @route GET /api/authors
+ * @access Public
  */
-Router.get("/", getAllAuthors);
+router.get("/", getAllAuthors);
 
 /**
- * @description Get author by id
- * @route /api/authors/:id
- * @method GET
- * @access public
+ * @description Get author by ID
+ * @route GET /api/authors/:id
+ * @access Public
  */
-Router.get("/:id", getAuthorById);
+router.get("/:id", getAuthorById);
 
 /**
  * @description Create new author
- * @route /api/authors
- * @method POST
- * @access private (admin)
+ * @route POST /api/authors
+ * @access Private (Admin)
  */
-Router.post("/", verifyTokenAndAdmin, createAuthor);
+router.post("/", verifyTokenAndAdmin, createAuthor);
 
 /**
  * @description Update author
- * @route /api/authors/:id
- * @method PUT
- * @access private (admin)
+ * @route PUT /api/authors/:id
+ * @access Private (Admin)
  */
-Router.put("/:id", verifyTokenAndAdmin, updateAuthor);
+router.put("/:id", verifyTokenAndAdmin, updateAuthor);
 
 /**
  * @description Delete author
- * @route /api/authors/:id
- * @method DELETE
- * @access private (admin)
+ * @route DELETE /api/authors/:id
+ * @access Private (Admin)
  */
-Router.delete("/:id", verifyTokenAndAdmin, deleteAuthor);
+router.delete("/:id", verifyTokenAndAdmin, deleteAuthor);
 
-module.exports = Router;
+module.exports = router;
