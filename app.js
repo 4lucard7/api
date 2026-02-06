@@ -3,17 +3,15 @@ const bookPath = require("./routes/Books");
 const AuthorPath = require("./routes/Authors");
 const AuthPath = require("./routes/Auth");
 const UserPath = require("./routes/Users");
-const mongoose = require("mongoose");
 const logger = require("./middlewares/logger");
 const {ErrorHandler, notFound} = require("./middlewares/error");
 const dotenv = require("dotenv");
+const connectToDb = require("./config/db");
 dotenv.config();
 
 
 //connection to db
-mongoose.connect(process.env.MONGO_URL)
-.then(() => console.log("Connected to DB"))
-.catch((err) => console.error("connection failed to mongoDB: " ,err));
+connectToDb();
 
 
 

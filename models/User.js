@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-
+const jwt = require("jsonwebtoken");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -31,22 +31,24 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+UserSchema.methods.generateToken = function () {
+  return jwt.sign(
+    {
+      id: this._id,
+      isAdmin: this.isAdmin,
+    },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: "30d" }
+  );
+};
+
+
 const User = mongoose.model("User", UserSchema);
 
 
-// Validation for creating a new user
-function ValidationCreateUser(obj) {
-  const schema = Joi.object({
-    username: Joi.string().min(3).max(100).required(),
-    email: Joi.string().email().min(5).required(),
-    password: Joi.string().min(6).required(),
-    isAdmin: Joi.boolean(),
-  });
 
-  return schema.validate(obj);
-}
-
-// Validation for updating a user (all fields optional)
+// Update user
 function ValidationUpdateUser(obj) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(100),
@@ -58,7 +60,7 @@ function ValidationUpdateUser(obj) {
   return schema.validate(obj);
 }
 
-// Validation for user registration
+// Register
 function validateRegister(obj) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(100).required(),
@@ -69,7 +71,7 @@ function validateRegister(obj) {
   return schema.validate(obj);
 }
 
-// Validation for user login
+// Login
 function validateLogin(obj) {
   const schema = Joi.object({
     email: Joi.string().email().min(5).required(),
@@ -81,8 +83,7 @@ function validateLogin(obj) {
 
 module.exports = {
   User,
-  ValidationCreateUser,
   ValidationUpdateUser,
   validateRegister,
-  validateLogin
+  validateLogin,
 };
