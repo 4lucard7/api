@@ -1,4 +1,4 @@
-const joi = require("joi");
+const Joi = require("joi");
 const mongoose = require("mongoose");
 
 const BookSchema = new mongoose.Schema(
@@ -9,6 +9,11 @@ const BookSchema = new mongoose.Schema(
       trim: true,
       minlength: 3,
       maxlength: 100,
+    },
+    author: {
+      type : mongoose.Schema.Types.ObjectId,
+      require : true,
+      ref : "Author"
     },
     genre: {
       type: String,
@@ -33,7 +38,15 @@ const BookSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Validation Update
+// helper to validate ObjectId in Joi
+function objectId(value, helpers) {
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    return helpers.error("any.invalid");
+  }
+  return value;
+}
+
+// Validation for creating a new book
 function ValidationCreateBook(obj) {
   const schema = Joi.object({
     title: Joi.string().min(3).max(100).required(),
@@ -50,7 +63,7 @@ function ValidationCreateBook(obj) {
   return schema.validate(obj);
 }
 
-// Validation Update
+// Validation for updating a book (all fields optional)
 function ValidationUpdateBook(obj) {
   const schema = Joi.object({
     title: Joi.string().min(3).max(100),
@@ -66,9 +79,10 @@ function ValidationUpdateBook(obj) {
   return schema.validate(obj);
 }
 
+const Book = mongoose.model("Book", BookSchema);
+
 module.exports = {
+  Book,
   ValidationCreateBook,
   ValidationUpdateBook,
-}
-
-module.exports = mongoose.model("Book", BookSchema);
+};

@@ -1,11 +1,14 @@
 const express = require("express");
 const Router = express.Router();
-const asyncHandler = require("express-async-handler");
-const {Book, ValidationCreateBook, ValidationUpdateBook, } = require("../models/Book");
 const {
-  verifyTokenAndAuthorization,
-  verifyTokenAndAdmin
-} = require("../middlewares/VerifyToken");
+  getAllBooks,
+  getBookById,
+  createBook,
+  updateBook,
+  deleteBook,
+} = require("../controllers/BookController")
+const { verifyTokenAndAdmin } = require("../middlewares/VerifyToken");
+
 
 /**
  * @description Get all books
@@ -13,16 +16,8 @@ const {
  * @method GET
  * @access public
  */
-Router.get("/", asyncHandler(async (req, res) => {
-
-    const books = await Book.find();
-
-    if (books.length === 0) {
-      return res.status(404).json({ message: "No books found" });
-    }
-
-    res.status(200).json(books);
-  })
+Router.get("/", 
+  getAllBooks
 );
 
 /**
@@ -31,17 +26,7 @@ Router.get("/", asyncHandler(async (req, res) => {
  * @method GET
  * @access public
  */
-Router.get("/:id", asyncHandler(async (req, res) => {
-    
-    const book = await Book.findById(req.params.id);
-
-    if (!book) {
-      return res.status(404).json({ message: "No book found" });
-    }
-
-    res.status(200).json(book);
-  })
-);
+Router.get("/:id", getBookById);
 
 /**
  * @description create new  book 
@@ -49,25 +34,7 @@ Router.get("/:id", asyncHandler(async (req, res) => {
  * @method POST
  * @access private
  */
-Router.post("/", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
-    
-    const {error} = ValidationCreateBook(req.body);
-
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message});
-    }
-
-    const book = new Book({
-        title : req.body.title,
-        genre : req.body.genre,
-        publichedYear : req.body.publichedYear,
-        pages : req.body.pages
-    })
-
-    const rest = await book.save();
-    res.status(201).json(rest);
-  })
-);
+Router.post("/", verifyTokenAndAdmin, createBook);
 
 /**
  * @description Update  book 
@@ -75,27 +42,7 @@ Router.post("/", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
  * @method PUT
  * @access private
  */
-Router.put("/:id", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
-    
-    const {error} = ValidationUpdateBook(req.body);
-
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message});
-    }
-
-    const rest = await Book.findByIdAndUpdate(req.params.id,{
-        $set : {
-            title : req.body.title,
-            genre : req.body.genre,
-            publichedYear : req.body.publichedYear,
-            pages : req.body.pages
-        }
-    }
-
-    );
-    res.status(201).json(rest);
-  })
-);
+Router.put("/:id", verifyTokenAndAdmin, updateBook);
 
 /**
  * @description delete book 
@@ -103,17 +50,7 @@ Router.put("/:id", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
  * @method DELETE
  * @access public
  */
-Router.delete("/:id", verifyTokenAndAdmin, asyncHandler(async (req, res) => {
-    
-    const book = await Book.findByIdAndDelete(req.params.id);
-
-    if (!book) {
-      return res.status(404).json({ message: "Book not found" });
-    }
-
-    res.status(200).json({ message: "Book has been deleted" });
-  })
-);
+Router.delete("/:id", verifyTokenAndAdmin, deleteBook);
 
 module.exports = Router;
 

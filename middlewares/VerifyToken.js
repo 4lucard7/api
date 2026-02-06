@@ -5,7 +5,12 @@ const jwt = require("jsonwebtoken");
 //Verify Token
 function verifyToken(req, res, next){
 
-    const token = req.headers.token;
+    // get token from headers
+    let token = req.headers.token;
+    if (!token && req.headers.authorization) {
+      const parts = req.headers.authorization.split(' ');
+      if (parts.length === 2 && /^Bearer$/i.test(parts[0])) token = parts[1];
+    }
     if(token){
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
@@ -46,4 +51,4 @@ function verifyTokenAndAdmin(req, res, next){
 module.exports = {verifyToken,
     verifyTokenAndAuthorization,
     verifyTokenAndAdmin
-}; 
+};
