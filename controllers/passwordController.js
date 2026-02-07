@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { User } = require("../models/User");
+const { User, valideChangePassword } = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt  = require("bcrypt");
 const nodemaielr = require("nodemailer");
@@ -108,7 +108,10 @@ module.exports.getResetPasswordView = asyncHandler( async (req, res) => {
  * @route Post /password/forgot-password/:userId/:token
  */
 module.exports.resetPassword = asyncHandler( async (req, res) => {
-    
+    const {error} = valideChangePassword(req.body);
+    if(error){
+        return res.status(400).json({message : error.details[0].message});
+    }
     const user = await User.findById(req.params.userId);
     if(!user){
         return res.status(404).json({message : "user not found"});

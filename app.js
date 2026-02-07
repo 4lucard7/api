@@ -10,6 +10,8 @@ const {ErrorHandler, notFound} = require("./middlewares/error");
 const dotenv = require("dotenv");
 const path = require("path");
 const connectToDb = require("./config/db");
+const helmet = require("helmet");
+const cors = require("cors");
 dotenv.config();
 
 
@@ -29,7 +31,15 @@ app.use(logger);
 app.use(express.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname, "images")))
 
+//helmet 
+app.use(helmet());
 
+//cors Polics
+app.use(cors({
+    origin : "*"
+}));
+
+//Set view
 app.set("view engine", "ejs");
 
 //Routes
