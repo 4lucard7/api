@@ -11,7 +11,7 @@ const {
   createAuthor,
   updateAuthor,
   deleteAuthor,
-} = require("../controllers/authorController");
+} = require("../controllers/AuthorController");
 
 /**
  * @description Get all authors

@@ -11,7 +11,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
-} = require("../controllers/userController");
+} = require("../controllers/UserController");
 
 /**
  * @description Get all users
